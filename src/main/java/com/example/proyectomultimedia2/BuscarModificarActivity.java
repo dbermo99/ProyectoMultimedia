@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,7 +38,7 @@ public class BuscarModificarActivity extends AppCompatActivity {
 
         f = getDatabasePath("almacen.sqlite");
         db = SQLiteDatabase.openOrCreateDatabase(f.getPath(), null);
-        db.execSQL("create table if not exists almacen(marca varchar2(15), modelo varchar2(15), color varchar(15), anioLanzamiento Integer(4), PRIMARY KEY(marca, modelo))");
+        db.execSQL("create table if not exists almacen(marca varchar2(15), modelo varchar2(15), color varchar(15), anioLanzamiento Integer(4),disponibilidad varchar(25), PRIMARY KEY(marca, modelo))");
 
         inicioBtn.setOnClickListener(view -> {
             Intent intent=new Intent(getApplicationContext(), MainActivity.class);
@@ -54,6 +55,9 @@ public class BuscarModificarActivity extends AppCompatActivity {
         RadioButton opcion1 = (RadioButton) findViewById(R.id.opcion1Rb);
         RadioButton opcion2 = (RadioButton) findViewById(R.id.opcion2Rb);
         RadioButton opcion3 = (RadioButton) findViewById(R.id.opcion3Rb);
+        CheckBox getafeCb = (CheckBox) findViewById(R.id.getafeCb);
+        CheckBox parlaCb = (CheckBox) findViewById(R.id.parlaCb);
+        CheckBox leganesCb = (CheckBox) findViewById(R.id.leganesCb);
 
         String marca = marcaTexto.getText().toString();
         String modelo = modeloTexto.getText().toString();
@@ -65,6 +69,8 @@ public class BuscarModificarActivity extends AppCompatActivity {
             //String modelo2 = cursor.getString(1);
             String color2 = cursor.getString(2);
             String anioLanzamiento2 = cursor.getString(3);
+            String disponibilidad = cursor.getString(4);
+
             colorTexto.setText(color2);
             if(anioLanzamiento2.equalsIgnoreCase("2000-2010"))
                 opcion1.setChecked(true);
@@ -72,6 +78,15 @@ public class BuscarModificarActivity extends AppCompatActivity {
                 opcion2.setChecked(true);
             else if(anioLanzamiento2.equalsIgnoreCase(">2020"))
                 opcion3.setChecked(true);
+            String locales[] = disponibilidad.split(" ");
+            for(String s: locales) {
+                if(s.trim().equalsIgnoreCase("getafe"))
+                    getafeCb.setChecked(true);
+                if(s.trim().equalsIgnoreCase("leganes"))
+                    leganesCb.setChecked(true);
+                if(s.trim().equalsIgnoreCase("parla"))
+                    parlaCb.setChecked(true);
+            }
         }
     }
 
@@ -82,6 +97,9 @@ public class BuscarModificarActivity extends AppCompatActivity {
         RadioButton opcion1 = (RadioButton) findViewById(R.id.opcion1Rb);
         RadioButton opcion2 = (RadioButton) findViewById(R.id.opcion2Rb);
         RadioButton opcion3 = (RadioButton) findViewById(R.id.opcion3Rb);
+        CheckBox getafeCb = (CheckBox) findViewById(R.id.getafeCb);
+        CheckBox parlaCb = (CheckBox) findViewById(R.id.parlaCb);
+        CheckBox leganesCb = (CheckBox) findViewById(R.id.leganesCb);
 
         String marca = marcaTexto.getText().toString();
         String modelo = modeloTexto.getText().toString();
@@ -94,9 +112,16 @@ public class BuscarModificarActivity extends AppCompatActivity {
         } else if(opcion3.isChecked()) {
             anioLanzamiento = ">2020";
         }
+        String disponibilidad = "";
+        if(getafeCb.isChecked())
+            disponibilidad += "Getafe ";
+        if(parlaCb.isChecked())
+            disponibilidad += "Parla ";
+        if(leganesCb.isChecked())
+            disponibilidad += "Leganes ";
 
         //MODIFICAMOS LA BASE DE DATOS
-        db.execSQL("update almacen set color = '"+color+"', anioLanzamiento = '"+anioLanzamiento+"' where marca like '"+marca+"' and modelo like '"+modelo+"' ");
+        db.execSQL("update almacen set color = '"+color+"', anioLanzamiento = '"+anioLanzamiento+"', disponibilidad = '"+disponibilidad+"' where marca like '"+marca+"' and modelo like '"+modelo+"' ");
 
         //CON ESTO LEEMOS EL TXT Y LO MODIFICAMOS Y LO GUARDAMOS EN UN STRING
         String texto = "";
@@ -108,7 +133,8 @@ public class BuscarModificarActivity extends AppCompatActivity {
                     String datos[] = linea.split(";");
                     datos[2] = color;
                     datos[3] = anioLanzamiento;
-                    texto += datos[0]+";"+datos[1]+";"+datos[2]+";"+datos[3] + "\n";
+                    datos[4] = disponibilidad;
+                    texto += datos[0]+";"+datos[1]+";"+datos[2]+";"+datos[3]+";"+disponibilidad + "\n";
                 }
             }
             fin.close();
@@ -129,7 +155,8 @@ public class BuscarModificarActivity extends AppCompatActivity {
                     String modelo1 = separado[1];
                     String color1 = separado[2];
                     String anioLanzamiento1 = separado[3];
-                    fout.write(marca1+";"+modelo1+";"+color1+";"+anioLanzamiento1+"\n");
+                    String disponibilidad1 = separado[4];
+                    fout.write(marca1+";"+modelo1+";"+color1+";"+anioLanzamiento1+";"+disponibilidad1+"\n");
                     linea = "";
                 }
             }

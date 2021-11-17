@@ -69,7 +69,8 @@
 
         <RadioGroup
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
             <RadioButton
                 android:id="@+id/opcion1Rb"
@@ -94,6 +95,38 @@
 
         </RadioGroup>
 
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Disponibilidad"
+            android:textSize="24sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/getafeCb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Getafe" />
+
+            <CheckBox
+                android:id="@+id/parlaCb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Parla" />
+
+            <CheckBox
+                android:id="@+id/leganesCb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Leganes" />
+
+        </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -114,5 +147,6 @@
                 android:onClick="modificar"
                 android:text="MODIFICAR" />
         </LinearLayout>
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
